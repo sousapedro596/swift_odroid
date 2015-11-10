@@ -29,7 +29,9 @@ from math import *
 from mavros.srv import CommandBool
 from mavros.utils import *
 
+#from mavros.msg import ActuatorControl
 from mavros.msg import ActuatorControl
+
 from mavros.msg import VFR_HUD
 
 from sensor_msgs.msg import NavSatFix
@@ -42,7 +44,7 @@ import Queue
 import LatLon
 
 #UDP_IP = "192.168.43.218"
-UDP_IP = "192.168.1.66"
+UDP_IP = "192.168.43.218"
 UDP_SEND_PORT = 5006
 UDP_RECV_PORT = 5005
 
@@ -370,7 +372,7 @@ class Main_app():
     def main_ros_node(self):
         self.sub_pos = rospy.Subscriber('/mavros/global_position/global', NavSatFix, self.swiftPosition)
 
-        self.pub = rospy.Publisher('/mavros/actuator_control', ActuatorControl, queue_size=10)
+        self.pub = rospy.Publisher('/mavros/actuator_controls', ActuatorControl, queue_size=10)
         
 
         rospy.init_node('Offboard', anonymous=True)
