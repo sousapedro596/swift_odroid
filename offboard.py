@@ -44,7 +44,7 @@ import Queue
 import LatLon
 
 #UDP_IP = "192.168.43.218"
-UDP_IP = "192.168.43.218"
+UDP_IP = "10.42.0.1"
 UDP_SEND_PORT = 5006
 UDP_RECV_PORT = 5005
 
@@ -162,7 +162,7 @@ class Comunication():
         self.swift_rot = message.heading
 
     def communication_thread(self):
-        self.sub_pos = rospy.Subscriber('/mavros/global_position/global', NavSatFix, self.get_rotation)
+        self.sub_pos = rospy.Subscriber('/mavros/vfr_hud', VFR_HUD,  self.get_rotation)
 
         while not rospy.is_shutdown():
 
