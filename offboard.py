@@ -144,7 +144,7 @@ class Comunication():
         #Swift Position
         self.swift_lat = 0
         self.swift_lon = 0   
-
+        self.swift_rot = 0
 
         #Mission Waypoint details
         self.mode_waypoint = 0
@@ -158,7 +158,11 @@ class Comunication():
         t1.start()
 
 
+    def get_rotation(self, message):
+        self.swift_rot = message.heading
+
     def communication_thread(self):
+        self.sub_pos = rospy.Subscriber('/mavros/global_position/global', NavSatFix, self.get_rotation)
 
         while not rospy.is_shutdown():
 
@@ -223,7 +227,7 @@ class Comunication():
                 message_to_send = ";swift_alive"
 
                 #swift position
-                message_to_send = message_to_send + ";s_pos;"+str(self.swift_lat)+";"+str(self.swift_lon)
+                message_to_send = message_to_send + ";s_pos;"+str(self.swift_lat)+";"+str(self.swift_lon)+";"+str(self.swift_rot)
 
                 sock_send.sendto(message_to_send, (UDP_IP, UDP_SEND_PORT))
 
