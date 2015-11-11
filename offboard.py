@@ -30,7 +30,7 @@ from mavros.srv import CommandBool
 from mavros.utils import *
 
 #from mavros.msg import ActuatorControl
-from mavros.msg import ActuatorControl
+from mavros_msgs.msg import ActuatorControl
 
 from mavros.msg import VFR_HUD
 
@@ -44,7 +44,7 @@ import Queue
 import LatLon
 
 #UDP_IP = "192.168.43.218"
-UDP_IP = "10.42.0.1"
+UDP_IP = "10.42.1.1"
 UDP_SEND_PORT = 5006
 UDP_RECV_PORT = 5005
 
@@ -75,7 +75,7 @@ class Heading_PID():
 
 
     def update_heading(self, message):
-
+	print "heading" + str(message.heading)
         self.heading = (message.heading + 180 - self.offset)%360
 
     def update_setpoint(self, desired_heading):
@@ -160,6 +160,7 @@ class Comunication():
 
     def get_rotation(self, message):
         self.swift_rot = message.heading
+	print "heading" + str(message.heading)
 
     def communication_thread(self):
         self.sub_pos = rospy.Subscriber('/mavros/vfr_hud', VFR_HUD,  self.get_rotation)
@@ -376,7 +377,7 @@ class Main_app():
     def main_ros_node(self):
         self.sub_pos = rospy.Subscriber('/mavros/global_position/global', NavSatFix, self.swiftPosition)
 
-        self.pub = rospy.Publisher('/mavros/actuator_controls', ActuatorControl, queue_size=10)
+        self.pub = rospy.Publisher('/mavros/actuator_control', ActuatorControl, queue_size=10)
         
 
         rospy.init_node('Offboard', anonymous=True)
@@ -391,6 +392,8 @@ class Main_app():
         mission_already_started = 0
 
         while not rospy.is_shutdown():
+
+            self.pub.publish(msg)
 
             #Update Mission
 
@@ -450,7 +453,7 @@ class Main_app():
 
             #Update Motors
             #msg.controls = [0,0,0,self.comm.mission_velocity, self.main_pid.getServo(),0.0,1,1]
-            msg.controls = [0,0,0,float(motor_throtle), float(motor_direction),0,1,1]
+            msg.controls = [0.43,0,0,float(motor_throtle), float(motor_direction),0,1,1]
             #msg.controls = [0,0,0,0, 0,0,1,1]
             self.pub.publish(msg)
 
